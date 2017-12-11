@@ -1,0 +1,36 @@
+body {
+    background-color:#000041;
+    color:white;
+    font-size:20px;
+}
+
+details {
+    padding-bottom: 0.5em;
+}
+
+.koboldSummary {
+    background:darkblue;
+}
+
+.equippedSummary {
+    background:darkred;
+}
+.inventorySummary {
+    background:darkred;
+}
+
+.detailBody {
+    padding-left: 1em;
+}
+
+summary:hover,button:hover {
+    cursor:pointer
+}
+
+.endOfWeekReport {
+    position: absolute;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    background: darkblue;
+}

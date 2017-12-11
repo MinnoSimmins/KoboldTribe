@@ -1,0 +1,7 @@
+<div>
+    <div ng-repeat="report in endOfWeekInfo.jobReports">
+        <span ng-bind="report"></span>
+    </div>
+    <span ng-bind="endOfWeekInfo.foodReport"></span>
+    <button ng-click="newWeek()">New Week</button>
+</div>

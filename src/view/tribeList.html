@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="TribeList" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../angular/angular.min.js"></script>
+    <script src="../resources/names/kobold.js"></script>
+    <script src="../resources/races/kobold.js"></script>
+    <script src="../controllers/tribe_list_controller.js"></script>
+    <script src="../controllers/character_generator.js"></script>
+    <script src="../services/tribe_service.js"></script>
+</head>
+<body ng-controller="TribeListController">
+<div ng-repeat="kobold in kobolds">
+    <span ng-bind-html="kobold"></span>
+    <hr/>
+</div>
+</body>
+</html>

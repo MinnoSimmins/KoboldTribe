@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="Main" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <script src="../angular/angular.min.js"></script>
+    <script src="../resources/names/kobold.js"></script>
+    <script src="../resources/races/kobold.js"></script>
+    <script src="../controllers/main_page_controller.js"></script>
+    <script src="../controllers/character_generator.js"></script>
+    <script src="../controllers/tribe.js"></script>
+    <script src="../services/tribe_service.js"></script>
+    <link rel="stylesheet" href="../css/main.css"></link>
+</head>
+<body ng-controller="MainPageController">
+
+Week {{tribe.week}} <br/>
+The state of your tribe: <br/>
+<details class="koboldsAccordion">
+    <summary>Kobolds: {{tribe.tribeSize}}</summary>
+    <div class="detailBody" ng-repeat="kobold in tribe.kobolds">
+        <details>
+            <summary class="koboldSummary" ng-bind="(kobold.gender=='male' ? '&#9794' : '&#9792') + kobold.name"></summary>
+            <div class="detailBody">
+                <span ng-bind-html="kobold.toStringDescriptiveHTML()"></span>
+                <br/>
+                <details>
+                    <summary class="inventorySummary">Inventory</summary>
+                    <div class="detailBody" ng-repeat="(name,item) in kobold.inventory">
+                        <span ng-bind="item.text + (item.amount > 1 ? ('(' + item.amount + ')') : '')"></span>
+                        <button ng-click="kobold.equip(name,item)" ng-hide="!item.equippable">equip</button>
+                    </div>
+                </details>
+                <details>
+                    <summary class="equippedSummary">Equipped Items</summary>
+                    <div class="detailBody" ng-repeat="(name,item) in kobold.equipped">
+                        <span ng-bind="item.text"></span>
+                        <button ng-click="kobold.unequip(name,item)">unequip</button>
+                    </div>
+                </details>
+                <br/>
+                <span>Current job:
+                    <span ng-bind="kobold.job.text"></span>
+                </span>
+                <br/>
+                <button ng-repeat="newJob in kobold.JOBS" ng-click="kobold.job=newJob">
+                    <span ng-bind="newJob.text" title="{{newJob.description}}"></span></button>
+                <br/>
+            </div>
+        </details>
+    </div>
+</details>
+<details class="tribeInventoryAccordion">
+    <summary>Tribe Stockpile</summary>
+
+</details>
+<br/>
+Happiness: {{tribe.happiness}}<br/>
+Food: {{tribe.food}}<br/>
+Gold: {{tribe.gold}}<br/>
+... <br/>
+<button ng-click="endWeek()">End Week</button>
+<modal-dialog class="endOfWeekReport" ng-hide="!endOfWeek" info="endOfWeekInfo">
+
+</body>
+</html>

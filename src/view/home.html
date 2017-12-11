@@ -1,0 +1,156 @@
+<!doctype html>
+
+<html lang="en" ng-app="HelloWorldApp">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <script src="../angular/angular.min.js"></script>
+    <script src="../controllers/hello_world_controller.js"></script>
+    <script src="../controllers/character_generator.js"></script>
+    <script src="../resources/names/kobold.js"></script>
+    <script src="../resources/races/kobold.js"></script>
+</head>
+
+<body style="background-color:#000041; color:white; font-size:20px">
+<div ng-controller="HelloWorldController">
+    <div ng-repeat="kobold in kobolds">
+        <span ng-bind-html="kobold"></span>
+        <hr/>
+    </div>
+</div>
+<form ng-submit="submit()" name="playerForm" ng-controller="HelloWorldController">
+    <h1>Character Creation</h1>
+    <label>You are a kobold.</label>
+    <br/>
+    <label>name:
+        <input type="text" name="inputName" ng-model="player.name">
+    </label>
+    <br/>
+    <label>gender:
+        <select ng-model="player.gender" ng-options="gender for gender in genders"></select>
+    </label>
+    <br/>
+    <label>height:
+        <input type="text" name="inputHeight" ng-model="player.height" pattern="[0-9.]+" required> meters ({{Math.round(player.height*3.281*100)/100}} feet).
+        <div style="margin-left:10px;font-size:15px">
+            For reference, the average height of a {{player.race}} is {{raceStats.height.mean}} meters.
+            <br/>
+            1 meter = 3.281 feet
+        </div>
+    </label>
+    <br/>
+    <!--<label>weight:
+        <input type="text" name="inputWeight" ng-model="player.weight" pattern="[0-9.]+" required> kilograms
+        <div style="margin-left:10px;font-size:15px">
+            For reference, the average weight of a {{player.race}} is {{raceStats.weight.mean}} kilograms.
+            <br/>
+            1 kilogram = 2.205 pounds
+        </div>
+    </label>
+    -->
+    <br/>
+    <label>{{raceStats.skin.skinType}} color:
+        <select ng-model="player.skin.skinColor" ng-options="color for color in raceStats.skin.skinColors"></select>
+
+    </label>
+    <br/>
+    <label>eye color:
+        <select ng-model="player.eyes.eyeColor" ng-options="color for color in raceStats.eyes.eyesColors"></select>
+    </label>
+    <br/>
+    <label>tail length:
+        <select ng-model="player.tail.tailLength" ng-options="length for length in raceStats.tail.tailLengths"></select>
+    </label>
+    <br/>
+    <label>tail thickness:
+        <select ng-model="player.tail.tailThickness" ng-options="thickness for thickness in raceStats.tail.tailThicknesses"></select>
+    </label>
+    <br/>
+    <label>attributes:
+        <div>Points left: {{attrPoints}}</div>
+        <div style="margin-left:10px">
+            <table style="text-align:left">
+                <tr>
+                    <th>Attribute</th>
+                    <th>Base</th>
+                    <th>+</th>
+                    <th>Racial Adj.</th>
+                    <th>=</th>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                    <th>Modifier</th>
+                </tr>
+                <tr>
+                    <th>Strength:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.str.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.str.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.str.base+player.attributes.str.mod"></span></th>
+                    <th><button ng-click="player.attributes.str = incrAttr(player.attributes.str, false)">-</button></th>
+                    <th><button ng-click="player.attributes.str = incrAttr(player.attributes.str, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.str.base+player.attributes.str.mod-10)/2)}}</th>
+                <tr>
+                <tr>
+                    <th>Dexterity:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.dex.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.dex.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.dex.base+player.attributes.dex.mod"></span></th>
+                    <th><button ng-click="player.attributes.dex = incrAttr(player.attributes.dex, false)">-</button></th>
+                    <th><button ng-click="player.attributes.dex = incrAttr(player.attributes.dex, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.dex.base+player.attributes.dex.mod-10)/2)}}</th>
+                <tr>
+                <tr>
+                    <th>Constitution:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.con.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.con.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.con.base+player.attributes.con.mod"></span></th>
+                    <th><button ng-click="player.attributes.con = incrAttr(player.attributes.con, false)">-</button></th>
+                    <th><button ng-click="player.attributes.con = incrAttr(player.attributes.con, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.con.base+player.attributes.con.mod-10)/2)}}</th>
+                <tr>
+                <tr>
+                    <th>Intelligence:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.int.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.int.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.int.base+player.attributes.int.mod"></span></th>
+                    <th><button ng-click="player.attributes.int = incrAttr(player.attributes.int, false)">-</button></th>
+                    <th><button ng-click="player.attributes.int = incrAttr(player.attributes.int, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.int.base+player.attributes.int.mod-10)/2)}}</th>
+                <tr>
+                <tr>
+                    <th>Wisdom:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.wis.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.wis.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.wis.base+player.attributes.wis.mod"></span></th>
+                    <th><button ng-click="player.attributes.wis = incrAttr(player.attributes.wis, false)">-</button></th>
+                    <th><button ng-click="player.attributes.wis = incrAttr(player.attributes.wis, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.wis.base+player.attributes.wis.mod-10)/2)}}</th>
+                <tr>
+                <tr>
+                    <th>Charisma:</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.cha.base"></span></th>
+                    <th>+</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.cha.mod"></span></th>
+                    <th>=</th>
+                    <th style="text-align:center"><span ng-bind="player.attributes.cha.base+player.attributes.cha.mod"></span></th>
+                    <th><button ng-click="player.attributes.cha = incrAttr(player.attributes.cha, false)">-</button></th>
+                    <th><button ng-click="player.attributes.cha = incrAttr(player.attributes.cha, true)">+</button></th>
+                    <th style="text-align:center">{{Math.floor((player.attributes.cha.base+player.attributes.cha.mod-10)/2)}}</th>
+                <tr>
+            </table>
+        </div>
+    </label>
+    <input type="submit" id="submit" value="Submit"/>
+</form>
+</body>
+</html>
