@@ -166,16 +166,22 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
       switch(true) {
           case (this.hp < 10):
               return "<span style='color:darkred'>near death</span>";
+              break;
           case (this.hp >= 10 && this.hp < 25):
               return "<span style='color:darkred'>grievously injured</span>";
+              break;
           case (this.hp >= 25 && this.hp < 50):
               return "<span style='color:red'>very injured</span>";
+              break;
           case (this.hp >= 50 && this.hp < 75):
               return "<span style='color:orange'>injured</span>";
+              break;
           case (this.hp >= 75 && this.hp < 100):
               return "<span style='color:yellow'>slightly injured</span>";
+              break;
           case (this.hp == 100):
               return "<span style='color:green'>uninjured</span>";
+              break;
       }
     };
 
@@ -183,18 +189,25 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         switch(true) {
             case (this.happiness < 10):
                 return "<span style='color:darkred'>livid</span>";
+                break;
             case (this.happiness >= 10 && this.happiness < 25):
                 return "<span style='color:red'>very unhappy</span>";
+                break;
             case (this.happiness >= 25 && this.happiness < 40):
                 return "<span style='color:orange'>unhappy</span>";
+                break;
             case (this.happiness >= 40 && this.happiness < 60):
                 return "<span style='color:yellow'>content</span>";
+                break;
             case (this.happiness >= 60 && this.happiness < 75):
                 return "<span style='color:lightgreen'>happy</span>";
+                break;
             case (this.happiness >= 75 && this.happiness < 90):
                 return "<span style='color:green'>very happy</span>";
+                break;
             case (this.happiness >= 90):
                 return "<span style='color:darkgreen'>ecstatic</span>";
+                break;
         }
     };
 

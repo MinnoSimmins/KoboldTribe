@@ -1,7 +1,15 @@
 <div>
-    <div ng-repeat="report in endOfWeekInfo.jobReports">
-        <span ng-bind="report"></span>
+    <h2>End of Week Report:</h2>
+    <div ng-repeat="report in endOfWeekInfo.koboldReports">
+        <details>
+            <summary style="background:darkblue" ng-bind="report.name"></summary>
+            <div class="detailBody">
+                <span ng-bind="report['jobReport']"></span>
+            </div>
+        </details>
+
     </div>
     <span ng-bind="endOfWeekInfo.foodReport"></span>
+    <br/>
     <button ng-click="newWeek()">New Week</button>
 </div>

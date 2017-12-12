@@ -5,8 +5,11 @@ angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(C
         this.inventory = [];
         this.week = 1;
         this.happiness = "content";
+        this.tribeSize = 5;
         this.food = 0;
         this.gold = 0;
+        this.foodIncome = 0;
+        this.foodConsumption = this.tribeSize;
 
         this.kobolds = Tribe.prototype.generateKobolds(this.tribeSize);
     }
@@ -22,28 +25,51 @@ angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(C
 
     Tribe.prototype.endWeek = function() {
         var endOfWeekReport = {};
-        endOfWeekReport["jobReports"] = this.doJobReport();
+        this.clearReport();
+        endOfWeekReport["koboldReports"] = this.doKoboldReports();
         endOfWeekReport["foodReport"] = this.doFoodReport();
+        this.doEndOfWeekEffects();
         this.week++;
         return endOfWeekReport;
     };
 
-    Tribe.prototype.doJobReport = function() {
-      var jobReports = {};
-      for (var i = 0; i < this.kobolds.length; i++) {
-          var kobold = this.kobolds[i];
-          if (kobold.job.text == kobold.JOBS.SCAVENGE.text) {
-              var foodScavenged = 2;
-              this.food += foodScavenged;
-              jobReports[i] = kobold.name + " scavenged " + foodScavenged + " food.";
-          }
-      }
-      return jobReports;
+    Tribe.prototype.clearReport = function() {
+        this.foodIncome = 0;
+        this.foodConsumption = this.kobolds.length;
+    };
+
+    Tribe.prototype.doKoboldReports = function() {
+        var koboldReports = [];
+        for (var i = 0; i < this.kobolds.length; i++) {
+            var jobReport = this.doJobReport(this.kobolds[i]);
+            koboldReports[i] = {
+                "name" : this.kobolds[i].name,
+                "jobReport" : jobReport
+            };
+        }
+        return koboldReports;
+    };
+
+    Tribe.prototype.doJobReport = function(kobold) {
+        var jobReport;
+        switch (kobold.job.text) {
+            case (kobold.JOBS.SCAVENGE.text):
+                var foodScavenged = 2;
+                this.foodIncome += foodScavenged;
+                jobReport = "Job: scavenged " + foodScavenged + " units of food.";
+                break;
+
+        }
+        return jobReport;
     };
 
     Tribe.prototype.doFoodReport = function() {
-        this.food -= this.kobolds.length;
-        return "The tribe consumed " + this.kobolds.length + " units of food. It gained " + (this.food - this.kobolds.length) + " units of food.";
+        return "The tribe consumed " + this.foodConsumption + " units of food, and gained " + this.foodIncome + " units of food.";
+    };
+
+    Tribe.prototype.doEndOfWeekEffects = function() {
+      this.food = this.food - this.foodConsumption + this.foodIncome;
+        this.food = (this.food < 0) ? 0 : this.food;
     };
 
     return Tribe;
