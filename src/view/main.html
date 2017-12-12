@@ -17,7 +17,7 @@
 Week {{tribe.week}} <br/>
 The state of your tribe: <br/>
 <details class="koboldsAccordion">
-    <summary>Kobolds: {{tribe.tribeSize}}</summary>
+    <summary>Kobolds: {{tribe.kobolds.length}}</summary>
     <div class="detailBody" ng-repeat="kobold in tribe.kobolds">
         <details>
             <summary class="koboldSummary" ng-bind="(kobold.gender=='male' ? '&#9794' : '&#9792') + kobold.name"></summary>

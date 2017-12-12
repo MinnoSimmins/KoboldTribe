@@ -122,6 +122,9 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         this.eyes.eyeColorAAn = startsWithVowel(this.eyes.eyeColor) ? 'an' : 'a';
         this.bmi = Math.round((this.weight / (this.height*this.height))*100)/100;
         this.job = Character.prototype.JOBS.SCAVENGE;
+        this.hp = 100;
+        this.health = 100;
+        this.happiness = 50;
         this.inventory = {
             'gold': {
                 text: 'gold',
@@ -156,6 +159,42 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         if (inventoryItem != null) {
             this.equipped[name] = item;
             delete this.inventory[name];
+        }
+    };
+
+    Character.prototype.getHPDescriptive = function() {
+      switch(true) {
+          case (this.hp < 10):
+              return "<span style='color:darkred'>near death</span>";
+          case (this.hp >= 10 && this.hp < 25):
+              return "<span style='color:darkred'>grievously injured</span>";
+          case (this.hp >= 25 && this.hp < 50):
+              return "<span style='color:red'>very injured</span>";
+          case (this.hp >= 50 && this.hp < 75):
+              return "<span style='color:orange'>injured</span>";
+          case (this.hp >= 75 && this.hp < 100):
+              return "<span style='color:yellow'>slightly injured</span>";
+          case (this.hp == 100):
+              return "<span style='color:green'>uninjured</span>";
+      }
+    };
+
+    Character.prototype.getHappinessDescriptive = function() {
+        switch(true) {
+            case (this.happiness < 10):
+                return "<span style='color:darkred'>livid</span>";
+            case (this.happiness >= 10 && this.happiness < 25):
+                return "<span style='color:red'>very unhappy</span>";
+            case (this.happiness >= 25 && this.happiness < 40):
+                return "<span style='color:orange'>unhappy</span>";
+            case (this.happiness >= 40 && this.happiness < 60):
+                return "<span style='color:yellow'>content</span>";
+            case (this.happiness >= 60 && this.happiness < 75):
+                return "<span style='color:lightgreen'>happy</span>";
+            case (this.happiness >= 75 && this.happiness < 90):
+                return "<span style='color:green'>very happy</span>";
+            case (this.happiness >= 90):
+                return "<span style='color:darkgreen'>ecstatic</span>";
         }
     };
 
@@ -202,6 +241,8 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
             description +=
                 '<br/>For a ' + this.race + ', ' + this.genderPronoun + ' has a ' + this.tail.tailThickness + ', ' + this.tail.tailLength + ' tail.';
         }
+        description += '<br/>Injury: ' + this.getHPDescriptive();
+        description += '<br/>Happiness: ' + this.getHappinessDescriptive();
         description += '</div>';
         return description;
     };

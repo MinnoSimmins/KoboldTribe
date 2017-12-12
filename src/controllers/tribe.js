@@ -4,8 +4,7 @@ angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(C
         this.kobolds = [];
         this.inventory = [];
         this.week = 1;
-        this.tribeSize = 5;
-        this.happiness = 50;
+        this.happiness = "content";
         this.food = 0;
         this.gold = 0;
 
