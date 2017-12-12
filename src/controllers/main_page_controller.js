@@ -4,7 +4,7 @@ angular.module('Main').controller('MainPageController', ['$scope', '$sce', 'Trib
         $scope.endOfWeek = false;
         $scope.endOfWeekInfo = {};
         $scope.tribe = TribeService.tribe;
-
+        $scope.gameOver = false;
 
 
         $scope.endWeek = function() {
@@ -14,7 +14,13 @@ angular.module('Main').controller('MainPageController', ['$scope', '$sce', 'Trib
 
         $scope.newWeek = function() {
             $scope.endOfWeek = false;
+            $scope.gameOver = $scope.tribe.kobolds.length <= 0;
         };
+
+        $scope.restart = function() {
+            $scope.tribe = TribeService.restart();
+            $scope.gameOver = false;
+        }
 }]);
 angular.module('Main').directive('modalDialog', function() {
     return {

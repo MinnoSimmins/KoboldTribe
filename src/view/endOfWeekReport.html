@@ -11,5 +11,9 @@
     </div>
     <span ng-bind="endOfWeekInfo.foodReport"></span>
     <br/>
+    <div ng-repeat="report in endOfWeekInfo.deathReports">
+        <span style="color:red" ng-bind="report"></span>
+    </div>
+    <br/>
     <button ng-click="newWeek()">New Week</button>
 </div>

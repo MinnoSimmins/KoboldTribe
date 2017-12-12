@@ -14,6 +14,7 @@
 </head>
 <body ng-controller="MainPageController">
 
+<div ng-hide="gameOver">
 Week {{tribe.week}} <br/>
 The state of your tribe: <br/>
 <details class="koboldsAccordion">
@@ -61,6 +62,10 @@ Gold: {{tribe.gold}}<br/>
 ... <br/>
 <button ng-click="endWeek()">End Week</button>
 <modal-dialog class="endOfWeekReport" ng-hide="!endOfWeek" info="endOfWeekInfo">
-
+</div>
+<div ng-hide="!gameOver">
+    <h2>All of your kobolds have died!</h2>
+    <button ng-click="restart()">Restart</button>
+</div>
 </body>
 </html>

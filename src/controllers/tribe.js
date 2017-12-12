@@ -1,11 +1,11 @@
 angular.module('TribeModule', ['CharacterGenerator']);
-angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(CharacterGenerator) {
-    function Tribe() {
+angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', '$sce', function(CharacterGenerator, $sce) {
+    function Tribe(tribeSize) {
         this.kobolds = [];
         this.inventory = [];
         this.week = 1;
         this.happiness = "content";
-        this.tribeSize = 5;
+        this.tribeSize = tribeSize;
         this.food = 0;
         this.gold = 0;
         this.foodIncome = 0;
@@ -28,7 +28,7 @@ angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(C
         this.clearReport();
         endOfWeekReport["koboldReports"] = this.doKoboldReports();
         endOfWeekReport["foodReport"] = this.doFoodReport();
-        this.doEndOfWeekEffects();
+        endOfWeekReport["deathReports"] = this.doDeathReport();
         this.week++;
         return endOfWeekReport;
     };
@@ -64,12 +64,35 @@ angular.module('TribeModule').factory('Tribe', ['CharacterGenerator', function(C
     };
 
     Tribe.prototype.doFoodReport = function() {
-        return "The tribe consumed " + this.foodConsumption + " units of food, and gained " + this.foodIncome + " units of food.";
+        var report = "The tribe consumed " + this.foodConsumption + " units of food, and gained " + this.foodIncome + " units of food.";
+        if (this.food - this.foodConsumption + this.foodIncome < 0) {
+            report += "Your tribe is starving!";
+        }
+        this.food = this.food - this.foodConsumption + this.foodIncome;
+        this.food = (this.food < 0) ? 0 : this.food;
+        if (this.food == 0 && this.foodConsumption > this.foodIncome) {
+            var foodLoss = this.foodConsumption - this.foodIncome;
+            for (var i = 0; i < this.kobolds.length; i++) {
+                this.kobolds[i].decreaseHunger(Math.random()*(foodLoss*10)+1);
+            }
+        } else if (this.food > 0) {
+            var foodGain = this.foodIncome - this.foodConsumption;
+            for (var i = 0; i < this.kobolds.length; i++) {
+                this.kobolds[i].increaseHunger(Math.random()*(foodGain-1)+1);
+            }
+        }
+        return report;
     };
 
-    Tribe.prototype.doEndOfWeekEffects = function() {
-      this.food = this.food - this.foodConsumption + this.foodIncome;
-        this.food = (this.food < 0) ? 0 : this.food;
+    Tribe.prototype.doDeathReport = function() {
+        var deathReports = [];
+        for (var i = 0; i < this.kobolds.length; i++) {
+            if (this.kobolds[i].hunger <= 0) {
+                deathReports.push(this.kobolds[i].name + " has died of starvation!");
+                this.kobolds.splice(i, 1);
+            }
+        }
+        return deathReports;
     };
 
     return Tribe;

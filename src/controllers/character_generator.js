@@ -125,6 +125,7 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         this.hp = 100;
         this.health = 100;
         this.happiness = 50;
+        this.hunger = 50;
         this.inventory = {
             'gold': {
                 text: 'gold',
@@ -160,6 +161,16 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
             this.equipped[name] = item;
             delete this.inventory[name];
         }
+    };
+
+    Character.prototype.decreaseHunger = function(amt) {
+        this.hunger -= amt;
+        this.hunger = this.hunger < 0 ? 0 : this.hunger;
+    };
+
+    Character.prototype.increaseHunger = function(amt) {
+      this.hunger += amt;
+      this.hunger = this.hunger > 100 ? 100 : this.hunger;
     };
 
     Character.prototype.getHPDescriptive = function() {
@@ -211,6 +222,32 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         }
     };
 
+    Character.prototype.getHungerDescriptive = function() {
+        switch(true) {
+            case (this.hunger < 10):
+                return "<span style='color:darkred'>starving</span>";
+                break;
+            case (this.hunger >= 10 && this.hunger < 25):
+                return "<span style='color:red'>near-starving</span>";
+                break;
+            case (this.hunger >= 25 && this.hunger < 40):
+                return "<span style='color:orange'>very hungry</span>";
+                break;
+            case (this.hunger >= 40 && this.hunger < 60):
+                return "<span style='color:yellow'>hungry</span>";
+                break;
+            case (this.hunger >= 60 && this.hunger < 75):
+                return "<span style='color:lightgreen'>slightly hungry</span>";
+                break;
+            case (this.hunger >= 75 && this.hunger < 90):
+                return "<span style='color:green'>well fed</span>";
+                break;
+            case (this.hunger >= 90):
+                return "<span style='color:darkgreen'>very well fed</span>";
+                break;
+        }
+    };
+
     Character.prototype.toString = function() {
         description =
             'Name: ' + this.name +
@@ -256,6 +293,7 @@ angular.module('CharacterGenerator').factory('Character',['$sce', function($sce)
         }
         description += '<br/>Injury: ' + this.getHPDescriptive();
         description += '<br/>Happiness: ' + this.getHappinessDescriptive();
+        description += '<br/>Hunger: ' + this.getHungerDescriptive();
         description += '</div>';
         return description;
     };
